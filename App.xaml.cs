@@ -4,10 +4,11 @@ using System.Runtime.InteropServices;
 using System.Windows.Media;
 using Microsoft.Win32;
 
-namespace PredPo;
+namespace VisuCompare;
 
 public partial class App : Application
 {
+    // Keep the original ID so existing Windows file associations continue to work.
     private const string ProgId = "PredPo.Bfrafr";
 
     private static readonly IReadOnlyDictionary<string, Color> LightPalette = new Dictionary<string, Color>
@@ -97,7 +98,7 @@ public partial class App : Application
     {
         try
         {
-            var executablePath = Path.Combine(AppContext.BaseDirectory, "PredPo.exe");
+            var executablePath = Path.Combine(AppContext.BaseDirectory, "VisuCompare.exe");
             if (!File.Exists(executablePath))
                 executablePath = Environment.ProcessPath ?? throw new FileNotFoundException("Spustitelný soubor aplikace nebyl nalezen.");
 
@@ -116,10 +117,17 @@ public partial class App : Application
                 openWithKey?.SetValue(ProgId, string.Empty, RegistryValueKind.String);
 
             using (var progIdKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{ProgId}"))
-                progIdKey?.SetValue(null, "Porovnání Před / Po", RegistryValueKind.String);
+                progIdKey?.SetValue(null, "Porovnání VisuCompare", RegistryValueKind.String);
 
             using (var iconKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{ProgId}\DefaultIcon"))
-                iconKey?.SetValue(null, $"\"{executablePath}\",0", RegistryValueKind.String);
+            {
+                var iconValue = $"\"{executablePath}\",0";
+                if (!string.Equals(iconKey?.GetValue(null) as string, iconValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    iconKey?.SetValue(null, iconValue, RegistryValueKind.String);
+                    changed = true;
+                }
+            }
 
             using (var commandKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{ProgId}\shell\open\command"))
                 commandKey?.SetValue(null, $"\"{executablePath}\" \"%1\"", RegistryValueKind.String);

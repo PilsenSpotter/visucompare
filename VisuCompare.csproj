@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>VisuCompare</AssemblyName>
+    <RootNamespace>VisuCompare</RootNamespace>
+    <Product>VisuCompare</Product>
+    <Authors>Oliver Bocko</Authors>
+    <Company>Oliver Bocko</Company>
+    <Copyright>© 2026 Oliver Bocko</Copyright>
+    <ApplicationIcon>visucompare-minimal.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyMetadata Include="Author" Value="$(Authors)" />
+    <AssemblyMetadata Include="Publisher" Value="$(Company)" />
+    <Resource Include="visucompare-minimal.ico" />
+    <Resource Include="visucompare-logo.png" />
+  </ItemGroup>
+</Project>

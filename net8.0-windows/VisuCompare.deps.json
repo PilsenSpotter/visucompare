@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "PredPo/1.0.0": {
+      "VisuCompare/1.0.0": {
         "runtime": {
-          "PredPo.dll": {}
+          "VisuCompare.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "PredPo/1.0.0": {
+    "VisuCompare/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

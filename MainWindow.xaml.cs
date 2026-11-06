@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
-namespace PredPo;
+namespace VisuCompare;
 
 public partial class MainWindow : Window
 {
@@ -106,7 +106,7 @@ public partial class MainWindow : Window
         var dialog = new OpenFileDialog
         {
             Title = "Přidat porovnání jako snímky",
-            Filter = "Soubory Před / Po (*.bfrafr)|*.bfrafr",
+            Filter = "Soubory VisuCompare (*.bfrafr)|*.bfrafr",
             CheckFileExists = true,
             Multiselect = true
         };
@@ -142,7 +142,7 @@ public partial class MainWindow : Window
         var dialog = new SaveFileDialog
         {
             Title = "Uložit prezentaci",
-            Filter = "Prezentace Před / Po (*.bfrafr)|*.bfrafr",
+            Filter = "Prezentace VisuCompare (*.bfrafr)|*.bfrafr",
             DefaultExt = ".bfrafr",
             AddExtension = true,
             FileName = "Prezentace.bfrafr",
@@ -198,6 +198,11 @@ public partial class MainWindow : Window
         PreviousSlideButton.IsEnabled = count > 0 && (_currentSlideIndex < 0 || _currentSlideIndex > 0);
         NextSlideButton.IsEnabled = count > 0 && (_currentSlideIndex < 0 || _currentSlideIndex < count - 1);
         SavePresentationButton.IsEnabled = count > 0;
+        SaveFileButton.Content = count > 0 ? "Uložit prezentaci" : "Uložit .bfrafr";
+        SaveFileButton.ToolTip = count > 0
+            ? $"Uložit celou prezentaci ({count} snímků) včetně obrázků do jednoho souboru .bfrafr"
+            : "Uložit aktuální porovnání včetně obrázků do souboru .bfrafr";
+        SaveFileButton.IsEnabled = count > 0 || BeforeImage.Source is not null || AfterImage.Source is not null;
     }
 
     private void ToggleFullscreen()
@@ -274,14 +279,20 @@ public partial class MainWindow : Window
     private void ChooseBefore_Click(object sender, RoutedEventArgs e) => ChooseImage(isBefore: true);
     private void ChooseAfter_Click(object sender, RoutedEventArgs e) => ChooseImage(isBefore: false);
 
-    private void SaveComparison_Click(object sender, RoutedEventArgs e)
+    private void SaveFile_Click(object sender, RoutedEventArgs e)
     {
+        if (_presentationSlides.Count > 0)
+        {
+            SavePresentation_Click(sender, e);
+            return;
+        }
+
         if (_beforePath is null && _afterPath is null) return;
 
         var dialog = new SaveFileDialog
         {
             Title = "Uložit porovnání",
-            Filter = "Soubor Před / Po (*.bfrafr)|*.bfrafr",
+            Filter = "Soubor VisuCompare (*.bfrafr)|*.bfrafr",
             DefaultExt = ".bfrafr",
             AddExtension = true,
             FileName = "Moje porovnání.bfrafr",
@@ -296,8 +307,8 @@ public partial class MainWindow : Window
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Otevřít porovnání",
-            Filter = "Soubor Před / Po (*.bfrafr)|*.bfrafr",
+            Title = "Otevřít porovnání nebo prezentaci",
+            Filter = "Porovnání a prezentace VisuCompare (*.bfrafr)|*.bfrafr",
             CheckFileExists = true,
             Multiselect = false
         };
@@ -374,6 +385,7 @@ public partial class MainWindow : Window
 
     private void SavePresentationFile(string path)
     {
+        UpdateCurrentPresentationSlide();
         var temporaryPath = path + ".tmp-" + Guid.NewGuid().ToString("N");
         try
         {
@@ -780,7 +792,6 @@ public partial class MainWindow : Window
         AfterFileName.Text = DisplayName(_afterPath, _afterName);
 
         var hasAnyImage = before is not null || after is not null;
-        SaveComparisonButton.IsEnabled = hasAnyImage;
         EmptyState.Visibility = hasAnyImage ? Visibility.Collapsed : Visibility.Visible;
         BeforeImage.Visibility = before is not null ? Visibility.Visible : Visibility.Collapsed;
         AfterClip.Visibility = after is not null ? Visibility.Visible : Visibility.Collapsed;
@@ -863,6 +874,7 @@ public partial class MainWindow : Window
         _isUpdatingSlider = true;
         PositionSlider.Value = Math.Clamp(x / PreviewArea.ActualWidth * 100d, 0, 100);
         _isUpdatingSlider = false;
+        UpdateCurrentPresentationSlide();
     }
 
     private void Clear_Click(object sender, RoutedEventArgs e)

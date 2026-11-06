@@ -1,8 +1,8 @@
-<Window x:Class="PredPo.MainWindow"
+<Window x:Class="VisuCompare.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Před / Po" Height="790" Width="1240" MinHeight="680" MinWidth="980"
-        Icon="before-after.ico"
+        Title="VisuCompare" Height="790" Width="1240" MinHeight="680" MinWidth="980"
+        Icon="visucompare-minimal.ico"
         WindowStartupLocation="CenterScreen" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource TextPrimaryBrush}"
         FontFamily="Segoe UI" PreviewKeyDown="MainWindow_KeyDown">
     <Grid>
@@ -15,10 +15,11 @@
             <Grid Margin="34,0" Background="{DynamicResource SurfaceBrush}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Border Width="42" Height="42" CornerRadius="13" Background="{DynamicResource AccentLightBrush}" Margin="0,0,13,0">
-                        <TextBlock Text="↔" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Image Source="visucompare-logo.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="True" UseLayoutRounding="True" />
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="PŘED / PO" FontSize="17" FontWeight="Bold" />
+                        <TextBlock Text="VisuCompare" FontSize="17" FontWeight="Bold" />
                         <TextBlock Text="Porovnejte změnu jediným tahem" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
                     </StackPanel>
                 </StackPanel>
@@ -26,7 +27,7 @@
                     <Button x:Name="FullscreenButton" Style="{StaticResource SecondaryButton}" Content="⛶" FontSize="18" Width="38" Height="36" Padding="4" Margin="0,0,8,0" ToolTip="Celá obrazovka (F11)" Click="Fullscreen_Click" />
                     <Button x:Name="ThemeToggleButton" Style="{StaticResource SecondaryButton}" Content="Tmavý režim" Padding="12,8" Margin="0,0,8,0" Click="ToggleTheme_Click" />
                     <Button Style="{StaticResource SecondaryButton}" Content="Otevřít .bfrafr" Padding="12,8" Margin="0,0,8,0" Click="OpenComparison_Click" />
-                    <Button x:Name="SaveComparisonButton" Style="{StaticResource AccentButton}" Content="Uložit .bfrafr" Padding="12,8" Margin="0,0,12,0" IsEnabled="False" Click="SaveComparison_Click" />
+                    <Button x:Name="SaveFileButton" Style="{StaticResource AccentButton}" Content="Uložit .bfrafr" Padding="12,8" Margin="0,0,12,0" IsEnabled="False" Click="SaveFile_Click" />
                     <Button x:Name="AutoSaveToggleButton" Style="{StaticResource SecondaryButton}" Padding="12,7" Click="ToggleAutoSave_Click" ToolTip="Kliknutím zapnete nebo vypnete automatické ukládání">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse x:Name="AutoSaveDot" Width="7" Height="7" Fill="{DynamicResource StatusDotBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
@@ -45,12 +46,13 @@
             </Grid.ColumnDefinitions>
 
             <Border x:Name="ControlsPanel" Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="16" Padding="22">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,22">
@@ -122,6 +124,7 @@
                         <TextBlock Text="Obrázky zůstávají uložené v tomto počítači, i když zavřete aplikaci." TextWrapping="Wrap" FontSize="11" Foreground="{DynamicResource TextTertiaryBrush}" LineHeight="17" Margin="2,13,2,0" />
                     </StackPanel>
                 </Grid>
+                </ScrollViewer>
             </Border>
 
             <Border x:Name="PreviewCard" Grid.Column="2" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="16" Padding="22">
